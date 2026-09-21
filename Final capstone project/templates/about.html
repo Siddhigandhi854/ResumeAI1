@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block title %}About - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="content-enter bg-black min-h-screen">
+    <!-- Header -->
+    <div class="bg-gray-900 shadow-sm border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">About ResumeAI</h1>
+                    <p class="text-gray-300">Learn more about our AI-powered resume analysis platform</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-8 text-white">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4">Revolutionizing Resume Analysis</h2>
+                    <p class="text-purple-100 mb-6">ResumeAI combines cutting-edge machine learning with natural language processing to provide comprehensive resume analysis that helps job seekers optimize their applications and land their dream jobs.</p>
+                    <div class="flex space-x-4">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold">-</div>
+                            <p class="text-purple-200">Resumes Analyzed</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold">-%</div>
+                            <p class="text-purple-200">Success Rate</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold">-</div>
+                            <p class="text-purple-200">User Rating</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="w-32 h-32 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4 pulse-animation">
+                        <i class="fas fa-rocket text-6xl text-white"></i>
+                    </div>
+                    <p class="text-purple-200">Resumes Analyzed</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission & Vision -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card-hover bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-700">
+                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-bullseye text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-white">Our Mission</h3>
+                <p class="text-gray-300 mb-4">To democratize access to professional resume analysis by leveraging artificial intelligence, helping job seekers from all backgrounds compete effectively in the modern job market.</p>
+                <p class="text-gray-300">We believe everyone deserves a fair chance at their dream job, and our AI-powered tools help level the playing field by providing expert-level resume insights.</p>
+            </div>
+
+            <div class="card-hover bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-700">
+                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-eye text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-white">Our Vision</h3>
+                <p class="text-gray-300 mb-4">To become the world's leading AI-powered career platform, empowering millions of professionals to optimize their job applications and achieve their career goals.</p>
+                <p class="text-gray-300">We're building a future where AI assists every step of the job search process, from resume creation to interview preparation and beyond.</p>
+            </div>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="bg-gray-900 rounded-xl shadow-lg p-8 border border-gray-700">
+            <h3 class="text-2xl font-semibold mb-6 text-white">Technology Stack</h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-brain text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2 text-white">Machine Learning</h4>
+                    <p class="text-sm text-gray-300">Random Forest, NLP, Deep Learning</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fab fa-python text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2 text-white">Backend</h4>
+                    <p class="text-sm text-gray-300">Python, Flask, Scikit-learn</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-code text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2 text-white">Frontend</h4>
+                    <p class="text-sm text-gray-300">HTML5, Tailwind CSS, JavaScript</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2 text-white">AI Services</h4>
+                    <p class="text-sm text-gray-300">Google Gemini AI, NLTK</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="bg-gray-900 rounded-xl shadow-lg p-8 border border-gray-700">
+            <h3 class="text-2xl font-semibold mb-6 text-white">Key Features</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-brain text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1 text-white">AI-Powered Analysis</h4>
+                        <p class="text-sm text-gray-300">Advanced ML algorithms for comprehensive resume evaluation</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-chart-pie text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1 text-white">ATS Optimization</h4>
+                        <p class="text-sm text-gray-300">Ensure your resume passes automated screening systems</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-bullseye text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1 text-white">Job Matching</h4>
+                        <p class="text-sm text-gray-300">Calculate compatibility with specific job descriptions</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-tools text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1 text-white">Skill Analysis</h4>
+                        <p class="text-sm text-gray-300">Identify missing skills and recommend improvements</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1 text-white">AI Suggestions</h4>
+                        <p class="text-sm text-gray-300">Get personalized recommendations from Gemini AI</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-pink-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-download text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1 text-white">Report Generation</h4>
+                        <p class="text-sm text-gray-300">Download comprehensive PDF reports</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Use Cases -->
+        <div class="bg-gray-900 rounded-xl shadow-lg p-8 border border-gray-700">
+            <h3 class="text-2xl font-semibold mb-6 text-white">Use Cases & Applications</h3>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold mb-3 text-white">For Job Seekers</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-start"><i class="fas fa-check text-green-400 mr-2 mt-1"></i>Optimize resumes for specific job applications</li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-400 mr-2 mt-1"></i>Identify skill gaps and get improvement suggestions</li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-400 mr-2 mt-1"></i>Track resume performance over time</li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-400 mr-2 mt-1"></i>Prepare for technical interviews</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3 text-white">For Recruiters</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-start"><i class="fas fa-check text-blue-400 mr-2 mt-1"></i>Screen resumes efficiently</li>
+                        <li class="flex items-start"><i class="fas fa-check text-blue-400 mr-2 mt-1"></i>Match candidates to job requirements</li>
+                        <li class="flex items-start"><i class="fas fa-check text-blue-400 mr-2 mt-1"></i>Standardize evaluation processes</li>
+                        <li class="flex items-start"><i class="fas fa-check text-blue-400 mr-2 mt-1"></i>Reduce bias in hiring decisions</li>
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Tailor resumes for new industries</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Discover suitable career paths</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Plan skill development roadmap</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4 text-green-600">For Students & Graduates</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Build strong first resumes</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Highlight academic achievements</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Prepare for entry-level positions</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Get internship recommendations</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4 text-orange-600">For HR Professionals</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Screen resumes efficiently</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Standardize evaluation criteria</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Reduce bias in hiring</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Improve candidate matching</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-purple-800 rounded-xl p-6 border border-purple-600">
+                <h3 class="text-xl font-semibold mb-4 text-white">Why Choose ResumeAI?</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-purple-600"></i>
+                        <span class="text-gray-300">95% accuracy in role prediction</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-purple-600"></i>
+                        <span class="text-gray-300">Trusted by 50,000+ professionals</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-purple-600"></i>
+                        <span class="text-gray-700">Instant AI-powered feedback</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-purple-600"></i>
+                        <span class="text-gray-300">Comprehensive ATS analysis</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-purple-600"></i>
+                        <span class="text-gray-300">Personalized career guidance</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-purple-800 rounded-xl p-6 border border-purple-600">
+                <h3 class="text-xl font-semibold mb-4 text-white">Industry Recognition</h3>
+                <div class="space-y-4">
+                    <div class="bg-gray-900 p-4 rounded-lg">
+                        <p class="text-sm text-gray-300 mb-2">"ResumeAI has transformed how we approach resume screening. The AI insights are incredibly accurate."</p>
+                        <p class="text-sm font-semibold text-white">- HR Director, Tech Company</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded-lg">
+                        <p class="text-sm text-gray-300 mb-2">"The ATS optimization feature helped me land my dream job. Highly recommended!"</p>
+                        <p class="text-sm font-semibold text-white">- Software Engineer</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded-lg">
+                        <p class="text-sm text-gray-300 mb-2">"The skill gap analysis was eye-opening. I knew exactly what to improve."</p>
+                        <p class="text-sm font-semibold text-white">- Marketing Professional</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="bg-purple-800 rounded-xl shadow-lg p-8 border border-purple-600">
+            <h3 class="text-2xl font-semibold mb-6 text-white">Impact & Statistics</h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">-</div>
+                    <p class="text-gray-300">Resumes Analyzed</p>
+                    <div class="mt-2 text-sm text-gray-400">Across 25+ industries</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">-%</div>
+                    <p class="text-gray-300">Success Rate</p>
+                    <div class="mt-2 text-sm text-gray-400">Users report improved responses</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-green-600 mb-2">-%</div>
+                    <p class="text-gray-300">Average Score Improvement</p>
+                    <div class="mt-2 text-sm text-gray-400">After AI recommendations</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-orange-600 mb-2">-</div>
+                    <p class="text-gray-300">User Rating</p>
+                    <div class="mt-2 text-sm text-gray-400">Based on 2,000+ reviews</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact & Support -->
+        <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-8 text-white">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Get Started Today</h3>
+                    <p class="text-purple-100 mb-6">Join thousands of professionals who have transformed their careers with AI-powered resume analysis.</p>
+                    <div class="flex space-x-4">
+                        <a href="/analyzer" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all">
+                            <i class="fas fa-rocket mr-2"></i>Start Analyzing
+                        </a>
+                        <a href="/dashboard" class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition-all">
+                            <i class="fas fa-chart-line mr-2"></i>View Dashboard
+                        </a>
+                    </div>
+                </div>
+                            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

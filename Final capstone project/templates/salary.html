@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Prediction - AI Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-money-bill-wave"></i> Salary Prediction</h1>
+            <p>Estimated salary range for <b>{{ role }}</b></p>
+        </header>
+
+        <main>
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <h3>Market Standards (Estimated)</h3>
+                <div class="salary-ranges" style="padding: 1rem;">
+                    <div class="salary-item" style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">
+                        <span>Entry Level</span>
+                        <b style="color: var(--secondary-color); font-size: 1.2rem;">{{ data.entry }}</b>
+                    </div>
+                    <div class="salary-item" style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">
+                        <span>Mid Level</span>
+                        <b style="color: var(--primary-color); font-size: 1.2rem;">{{ data.mid }}</b>
+                    </div>
+                    <div class="salary-item" style="display: flex; justify-content: space-between;">
+                        <span>Senior Level</span>
+                        <b style="color: var(--accent-color); font-size: 1.2rem;">{{ data.senior }}</b>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: #888; margin-top: 1rem; text-align: center;">
+                    * Predicted using AI based on current market data and resume analysis.
+                </p>
+            </div>
+
+            <div class="actions">
+                <a href="/" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto;">Back to Dashboard</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

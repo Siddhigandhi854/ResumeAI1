@@ -1,0 +1,11 @@
+flask>=3.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.2.0
+reportlab>=4.0.0
+python-docx>=0.8.11
+pdfminer.six>=20221105
+google-generativeai>=0.3.0
+nltk>=3.8
+requests>=2.31.0
+python-dotenv>=1.0.0

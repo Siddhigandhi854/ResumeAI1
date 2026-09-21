@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Intelligence - AI Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-line"></i> Market Intelligence</h1>
+            <p>Current job market trends for <b>{{ role }}</b></p>
+        </header>
+
+        <main>
+            <div class="results-grid">
+                <div class="card">
+                    <h3><i class="fas fa-bullseye"></i> Current Demand</h3>
+                    <div class="strength-label strength-{{ data.demand }}" style="font-size: 2rem;">
+                        {{ data.demand }}
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-building"></i> Top Hiring Companies</h3>
+                    <ul>
+                        {% for company in data.companies %}
+                        <li>{{ company }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-detailed">
+                <div class="card">
+                    <h3><i class="fas fa-rocket"></i> Key Emerging Trends</h3>
+                    <ul>
+                        {% for trend in data.trends %}
+                        <li>{{ trend }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-laptop-house"></i> Remote Availability</h3>
+                    <p style="font-size: 1.5rem; text-align: center; font-weight: bold; color: var(--secondary-color);">
+                        {{ data.remote_availability }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="/" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto;">Back to Dashboard</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

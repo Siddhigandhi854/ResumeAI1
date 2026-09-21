@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-file-alt"></i> AI Resume Analyzer</h1>
+            <p>Optimize your resume for ATS and land your dream job</p>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <form id="upload-form" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="resume">Upload Resume (PDF/DOCX)</label>
+                        <input type="file" id="resume" name="resume" accept=".pdf,.docx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="target_role">Target Role</label>
+                        <select id="target_role" name="target_role" required>
+                            <option value="">Select a role...</option>
+                            {% for role in roles %}
+                            <option value="{{ role }}">{{ role }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="job_description">Job Description (Optional)</label>
+                        <textarea id="job_description" name="job_description" rows="4" placeholder="Paste job description here for better matching..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary" id="analyze-btn">Analyze Resume</button>
+                </form>
+            </section>
+
+            <div id="loader" class="hidden">
+                <div class="spinner"></div>
+                <p>Analyzing your resume with AI...</p>
+            </div>
+
+            <section id="results" class="hidden">
+                <div class="results-grid">
+                    <!-- ML Prediction -->
+                    <div class="card prediction-card">
+                        <h3><i class="fas fa-brain"></i> ML Prediction</h3>
+                        <div class="prediction-info">
+                            <p class="main-prediction">Predicted Role: <span id="predicted-role"></span></p>
+                            <p>Confidence: <span id="confidence-score"></span>%</p>
+                            <div class="top-roles">
+                                <h4>Top 5 Matching Roles:</h4>
+                                <ul id="top-5-roles"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ATS Score -->
+                    <div class="card score-card">
+                        <h3><i class="fas fa-chart-pie"></i> ATS Score</h3>
+                        <div class="score-circle">
+                            <span id="ats-score"></span>
+                            <small>/ 100</small>
+                        </div>
+                        <div class="score-breakdown">
+                            <p>Skills Match: <span id="skills-match"></span>/40</p>
+                            <p>Keywords: <span id="keywords-score"></span>/20</p>
+                            <p>Experience: <span id="experience-score"></span>/15</p>
+                            <p>Education: <span id="education-score"></span>/10</p>
+                            <p>Structure: <span id="structure-score"></span>/15</p>
+                        </div>
+                    </div>
+
+                    <!-- Job Matching -->
+                    <div class="card match-card">
+                        <h3><i class="fas fa-handshake"></i> Job Matching</h3>
+                        <div class="match-percentage">
+                            <span id="match-percentage"></span>%
+                        </div>
+                        <p class="match-label" id="match-label"></p>
+                    </div>
+
+                    <!-- Resume Strength -->
+                    <div class="card strength-card">
+                        <h3><i class="fas fa-signal"></i> Resume Strength</h3>
+                        <div class="strength-label" id="strength-label"></div>
+                        <p>ML Score: <span id="regression-score"></span>/100</p>
+                    </div>
+                </div>
+
+                <div class="results-detailed">
+                    <!-- Skills Analysis -->
+                    <div class="card skills-analysis">
+                        <h3><i class="fas fa-tools"></i> Skills Analysis</h3>
+                        <div class="skills-container">
+                            <h4>Extracted Skills:</h4>
+                            <div id="extracted-skills" class="tags"></div>
+                            <h4>Missing Skills for Target Role:</h4>
+                            <div id="missing-skills" class="tags missing"></div>
+                            <p>Skill Gap: <span id="skill-gap"></span>%</p>
+                        </div>
+                    </div>
+
+                    <!-- Keyword Analysis -->
+                    <div class="card keyword-analysis">
+                        <h3><i class="fas fa-key"></i> Keyword Analysis (TF-IDF)</h3>
+                        <div id="keyword-list"></div>
+                    </div>
+
+                    <!-- Section Detection -->
+                    <div class="card section-detection">
+                        <h3><i class="fas fa-th-list"></i> Section Detection</h3>
+                        <div class="sections">
+                            <p>Found: <span id="found-sections"></span></p>
+                            <p class="missing">Missing: <span id="missing-sections"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Suggestions -->
+                <div class="card ai-suggestions">
+                    <h3><i class="fas fa-robot"></i> AI Suggestions (Gemini)</h3>
+                    <div class="suggestions-grid">
+                        <div class="suggestion-block">
+                            <h4>Strengths</h4>
+                            <ul id="ai-strengths"></ul>
+                        </div>
+                        <div class="suggestion-block">
+                            <h4>Weaknesses</h4>
+                            <ul id="ai-weaknesses"></ul>
+                        </div>
+                        <div class="suggestion-block">
+                            <h4>Improvements</h4>
+                            <ul id="ai-improvements"></ul>
+                        </div>
+                    </div>
+                    <div class="career-suggestions">
+                        <h4>Career Suggestions</h4>
+                        <div class="suggestion-block">
+                            <p><b>Recommended Projects:</b> <span id="rec-projects"></span></p>
+                            <p><b>Skills to Improve:</b> <span id="rec-skills"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Insights Navigation -->
+                <div class="card advanced-insights">
+                    <h3><i class="fas fa-magic"></i> Advanced Insights</h3>
+                    <p style="margin-bottom: 1.5rem;">Explore detailed analysis powered by Gemini AI:</p>
+                    <div class="insights-buttons" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button id="nav-courses" class="btn-insight"><i class="fas fa-graduation-cap"></i> Courses</button>
+                        <button id="nav-market" class="btn-insight"><i class="fas fa-chart-line"></i> Market Intelligence</button>
+                        <button id="nav-salary" class="btn-insight"><i class="fas fa-money-bill-wave"></i> Salary Prediction</button>
+                        <button id="nav-interview" class="btn-insight"><i class="fas fa-user-tie"></i> Interview Prep</button>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="download-btn" class="btn-secondary"><i class="fas fa-download"></i> Download Full Report (PDF)</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

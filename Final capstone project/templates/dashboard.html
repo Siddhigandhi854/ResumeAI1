@@ -1,0 +1,775 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="content-enter bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 min-h-screen dark:from-gray-950 dark:via-slate-900 dark:to-indigo-950 transition-colors duration-300">
+    <!-- Header -->
+    <div class="bg-white/10 backdrop-blur-md border-b border-white/20 dark:bg-slate-900/40 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-4xl font-bold text-white mb-2">Dashboard</h1>
+                    <p class="text-purple-200 text-lg dark:text-purple-300">Resume Analysis Overview</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="bg-purple-600/30 text-purple-200 px-4 py-2 rounded-full text-lg font-medium backdrop-blur-sm border border-purple-400/30">
+                        <i class="fas fa-chart-line mr-2"></i>Analytics
+                    </span>
+                    <span class="bg-green-600/30 text-green-200 px-4 py-2 rounded-full text-lg font-medium backdrop-blur-sm border border-green-400/30">
+                        <i class="fas fa-check-circle mr-2"></i>Live Data
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        {% if analysis_data %}
+            <!-- Overview Cards -->
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <!-- ATS Score -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/20 hover:bg-white/15 transition-all dark:bg-slate-900/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-600/30 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-chart-pie text-blue-300 text-xl"></i>
+                        </div>
+                        <span class="text-sm bg-blue-600/30 text-blue-200 px-3 py-1 rounded-full backdrop-blur-sm">ATS</span>
+                    </div>
+                    <h3 class="text-lg font-medium text-purple-200 mb-2">ATS Score</h3>
+                    <div class="flex items-baseline">
+                        <p class="text-4xl font-bold text-white">{{ analysis_data.ats_score or 0 }}</p>
+                        <span class="text-purple-200 ml-1">/100</span>
+                    </div>
+                    <div class="mt-3">
+                        <div class="w-full bg-purple-900/50 rounded-full h-3">
+                           <div class="bg-gradient-to-r from-blue-500 to-blue-400 h-3 rounded-full transition-all duration-500" style="width: {{ analysis_data.ats_score or 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Predicted Role -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/20 hover:bg-white/15 transition-all dark:bg-slate-900/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-purple-600/30 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-brain text-purple-300 text-xl"></i>
+                        </div>
+                        <span class="text-sm bg-purple-600/30 text-purple-200 px-3 py-1 rounded-full backdrop-blur-sm">ML</span>
+                    </div>
+                    <h3 class="text-lg font-medium text-purple-200 mb-2">Best Match</h3>
+                    <p class="text-2xl font-bold text-white truncate">{{ analysis_data.predicted_role or 'N/A' }}</p>
+                    <p class="text-purple-200 text-sm mt-1">AI Prediction</p>
+                </div>
+
+                <!-- Confidence Score -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/20 hover:bg-white/15 transition-all dark:bg-slate-900/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-600/30 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-percentage text-green-300 text-xl"></i>
+                        </div>
+                        <span class="text-sm bg-green-600/30 text-green-200 px-3 py-1 rounded-full backdrop-blur-sm">Score</span>
+                    </div>
+                    <h3 class="text-lg font-medium text-purple-200 mb-2">Confidence</h3>
+                    <div class="flex items-baseline">
+                        <p class="text-4xl font-bold text-white">{{ "%.1f"|format(analysis_data.confidence_score|float if analysis_data.confidence_score else 0) }}</p>
+                        <span class="text-purple-200 ml-1">%</span>
+                    </div>
+                    <p class="text-purple-200 text-sm mt-1">Model Accuracy</p>
+                </div>
+
+                <!-- Job Match -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/20 hover:bg-white/15 transition-all dark:bg-slate-900/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-orange-600/30 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-handshake text-orange-300 text-xl"></i>
+                        </div>
+                        <span class="text-sm bg-orange-600/30 text-orange-200 px-3 py-1 rounded-full backdrop-blur-sm">Match</span>
+                    </div>
+                    <h3 class="text-lg font-medium text-purple-200 mb-2">Job Match</h3>
+                    <div class="flex items-baseline">
+                        <p class="text-4xl font-bold text-white">{{ analysis_data.job_match_score or 0 }}</p>
+                        <span class="text-purple-200 ml-1">%</span>
+                    </div>
+                    <p class="text-purple-200 text-sm mt-1">Compatibility: <span class="font-bold text-white">{{ analysis_data.compatibility }}</span></p>
+                </div>
+            </div>
+
+            <!-- Resume Section Analyzer -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <h3 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-tasks text-teal-400 mr-3"></i>
+                    Resume Section Analyzer
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                    {% if analysis_data.section_analysis %}
+                        {% for section, info in analysis_data.section_analysis.items() %}
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/10 text-center hover:bg-white/10 transition-all">
+                            <p class="text-sm font-semibold text-purple-200 uppercase mb-2">{{ section }}</p>
+                            {% if info.status == 'Excellent' %}
+                                <span class="inline-flex items-center px-3 py-1 bg-green-500/20 text-green-300 text-xs font-bold rounded-full border border-green-500/30">
+                                    <i class="fas fa-check-circle mr-1"></i> Excellent
+                                </span>
+                            {% elif info.status == 'Good' %}
+                                <span class="inline-flex items-center px-3 py-1 bg-yellow-500/20 text-yellow-300 text-xs font-bold rounded-full border border-yellow-500/30">
+                                    <i class="fas fa-exclamation-circle mr-1"></i> Good
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center px-3 py-1 bg-red-500/20 text-red-300 text-xs font-bold rounded-full border border-red-500/30">
+                                    <i class="fas fa-times-circle mr-1"></i> Improve
+                                </span>
+                            {% endif %}
+                            <p class="text-xs text-gray-300 mt-3 text-left leading-relaxed">{{ info.text }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-purple-300 col-span-5">No section analysis available</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Charts & XAI Section -->
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- Top 3 Predicted Roles & Explainable AI -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-brain text-purple-400 mr-3"></i>
+                        Top Predicted Roles & Model Reasoning
+                    </h3>
+                    <div class="space-y-5">
+                        <div>
+                            <p class="text-sm font-semibold text-purple-200 uppercase mb-3">Top 3 Classifier Outcomes</p>
+                            <div class="space-y-3">
+                                {% if analysis_data.probabilities %}
+                                    {% for role, prob in (analysis_data.probabilities.items()|sort(attribute='1', reverse=True))[:3] %}
+                                    <div>
+                                        <div class="flex justify-between text-sm text-gray-200 mb-1">
+                                            <span>{{ role }}</span>
+                                            <span class="font-bold">{{ (prob * 100)|round(1) }}%</span>
+                                        </div>
+                                        <div class="w-full bg-purple-900/40 rounded-full h-2">
+                                            <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500" style="width: {{ prob * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-xs text-gray-300">No classifier outcome probabilities available.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-white/10">
+                            <h4 class="text-lg font-bold text-teal-300 mb-3">
+                                <i class="fas fa-info-circle mr-2"></i>Why did the model predict this? (XAI)
+                            </h4>
+                            <p class="text-sm text-gray-300 mb-3">
+                                The model identified specific feature weights intersecting with the content and keywords of your resume:
+                            </p>
+                            <div class="grid grid-cols-2 gap-3">
+                                {% if analysis_data.xai_contributions %}
+                                    {% for item in analysis_data.xai_contributions %}
+                                    <div class="bg-white/5 p-3 rounded-lg border border-white/10 flex justify-between items-center">
+                                        <span class="text-sm text-purple-200 truncate pr-2">{{ item.keyword }}</span>
+                                        <span class="text-xs bg-teal-500/20 text-teal-300 font-bold px-2 py-0.5 rounded border border-teal-500/30">+{{ item.percentage }}%</span>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div id="role-prediction-chart" class="mt-4" style="height: 240px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skill Match Overview Chart -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-tools text-green-400 mr-3"></i>
+                        Skill Match Analysis
+                    </h3>
+                    <div id="skill-match-chart" style="height: 300px;"></div>
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <h3 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-cogs text-blue-400 mr-3"></i>
+                    Skills Analysis & Gaps
+                </h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-semibold text-purple-200 mb-4">Found Skills</h4>
+                        <div class="flex flex-wrap gap-3">
+                            {% if analysis_data.skills %}
+                                {% for skill in analysis_data.skills %}
+                                <span class="px-4 py-2 bg-green-600/30 text-green-300 rounded-full text-lg font-medium backdrop-blur-sm border border-green-400/30">
+                                    {{ skill }}
+                                </span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-purple-300">No skills identified</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold text-purple-200 mb-4">Missing Skills</h4>
+                        <div class="flex flex-wrap gap-3">
+                            {% if analysis_data.missing_skills %}
+                                {% for skill in analysis_data.missing_skills %}
+                                <span class="px-4 py-2 bg-red-600/30 text-red-300 rounded-full text-lg font-medium backdrop-blur-sm border border-red-400/30">
+                                    {{ skill }}
+                                </span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-purple-300">No missing skills</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Readiness Section -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <h3 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-building text-yellow-400 mr-3"></i>
+                    Company Readiness Score
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                    {% if analysis_data.company_readiness %}
+                        {% for company, info in analysis_data.company_readiness.items() %}
+                        <div class="bg-white/5 p-6 rounded-xl border border-white/10 flex flex-col items-center hover:bg-white/10 transition-all group relative">
+                            <span class="text-lg font-bold text-white mb-3">{{ company }}</span>
+                            
+                            <!-- Circular Progress Bar -->
+                            <div class="relative w-24 h-24 flex items-center justify-center">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="48" cy="48" r="38" stroke="rgba(255,255,255,0.05)" stroke-width="6" fill="transparent"/>
+                                    <circle cx="48" cy="48" r="38" stroke="url(#gradient-{{ company }})" stroke-width="6" fill="transparent"
+                                            stroke-dasharray="239" stroke-dashoffset="{{ 239 - (239 * info.score / 100) }}"
+                                            class="transition-all duration-1000 ease-out"/>
+                                    <defs>
+                                        <linearGradient id="gradient-{{ company }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#FBBF24"/>
+                                            <stop offset="100%" stop-color="#F59E0B"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <span class="absolute text-xl font-bold text-white">{{ info.score }}%</span>
+                            </div>
+                            
+                            <!-- Hover details displaying missing skills -->
+                            <div class="mt-4 text-center">
+                                <p class="text-xs text-purple-200">Readiness Score</p>
+                                <div class="mt-2 hidden group-hover:block absolute bottom-full left-1/2 transform -translate-x-1/2 bg-gray-950/90 backdrop-blur border border-white/20 p-3 rounded-lg w-48 text-left z-20 shadow-xl mb-2">
+                                    <p class="text-xs font-bold text-yellow-400 mb-1">Missing for 100%:</p>
+                                    <ul class="text-[10px] text-gray-200 space-y-1">
+                                        {% if info.missing %}
+                                            {% for skill in info.missing %}
+                                            <li><i class="fas fa-times text-red-400 mr-1"></i> {{ skill }}</li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li><i class="fas fa-check text-green-400 mr-1"></i> All skills acquired!</li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-purple-300 col-span-5">No company readiness details available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- ATS Score Breakdown & Potential ATS Score Engine -->
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- ATS Breakdown Chart -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-chart-bar text-orange-400 mr-3"></i>
+                        ATS Score Breakdown
+                    </h3>
+                    <div id="ats-breakdown-chart" style="height: 300px;"></div>
+                </div>
+
+                <!-- Potential ATS Score Engine -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-signal text-teal-400 mr-3"></i>
+                        Potential ATS Score Engine
+                    </h3>
+                    <div class="flex justify-between items-center mb-6 p-4 bg-white/5 rounded-xl border border-white/10">
+                        <div>
+                            <p class="text-xs text-purple-200">Current Score</p>
+                            <p class="text-3xl font-bold text-white">{{ analysis_data.ats_score }}<span class="text-sm font-normal text-gray-400">/100</span></p>
+                        </div>
+                        <div class="text-center text-teal-400">
+                            <i class="fas fa-long-arrow-alt-right text-3xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-teal-300">Potential Target</p>
+                            <p class="text-3xl font-bold text-teal-300">{{ analysis_data.potential_score }}<span class="text-sm font-normal text-gray-400">/100</span></p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-200 mb-4 font-semibold">Actions Required for Target Score:</p>
+                    <ul class="space-y-3">
+                        {% if analysis_data.improvement_suggestions %}
+                            {% for sug in analysis_data.improvement_suggestions %}
+                            <li class="flex items-start bg-white/5 p-3 rounded-lg border border-white/5 hover:border-white/10 transition-colors">
+                                <i class="fas fa-check-circle text-teal-400 mt-1 mr-3 text-sm"></i>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-100 font-medium">{{ sug.text }}</p>
+                                </div>
+                                <span class="text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded ml-2">{{ sug.points }}</span>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="text-sm text-green-300"><i class="fas fa-check mr-2"></i> Your resume is already fully optimized!</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Resume vs Job Description Match Report -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <h3 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-file-signature text-purple-400 mr-3"></i>
+                    Resume vs Job Description Match Report
+                </h3>
+                {% if analysis_data.compatibility and analysis_data.compatibility != 'N/A' %}
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10 flex flex-col justify-center items-center text-center">
+                        <p class="text-sm text-purple-200 mb-2 uppercase tracking-wider font-semibold">Overall Match</p>
+                        <div class="text-5xl font-bold text-white mb-2">{{ analysis_data.match_percentage or 0 }}%</div>
+                        <p class="text-xs text-purple-200 mt-2">Compatibility Level: <span class="font-bold text-teal-300">{{ analysis_data.compatibility or 'N/A' }}</span></p>
+                        <div class="w-full bg-purple-900/40 rounded-full h-3 mt-4">
+                            <div class="bg-gradient-to-r from-teal-400 to-green-500 h-3 rounded-full transition-all duration-500" style="width: {{ analysis_data.match_percentage or 0 }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:col-span-2 grid md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-sm text-green-300 font-bold mb-3 uppercase tracking-wider flex items-center">
+                                <i class="fas fa-check-circle mr-2 text-green-400"></i> Matching Skills
+                            </p>
+                            <div class="space-y-2 max-h-48 overflow-y-auto pr-2">
+                                {% if analysis_data.matching_skills %}
+                                    {% for skill in analysis_data.matching_skills %}
+                                    <div class="text-sm text-gray-100 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded flex items-center">
+                                        <i class="fas fa-check text-green-400 mr-2 text-xs"></i> {{ skill }}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-sm text-gray-400 italic">No skills matched. Please check your target job description.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-red-300 font-bold mb-3 uppercase tracking-wider flex items-center">
+                                <i class="fas fa-times-circle mr-2 text-red-400"></i> Missing Skills / Keywords
+                            </p>
+                            <div class="space-y-2 max-h-48 overflow-y-auto pr-2">
+                                {% if analysis_data.missing_keywords %}
+                                    {% for skill in analysis_data.missing_keywords %}
+                                    <div class="text-sm text-gray-100 bg-red-500/10 border border-red-500/20 px-3 py-1.5 rounded flex items-center">
+                                        <i class="fas fa-times text-red-400 mr-2 text-xs"></i> {{ skill }}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-sm text-gray-400 italic">No missing keywords detected. Excellent match!</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <div class="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paste text-purple-300 text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">No Job Description Provided</h4>
+                    <p class="text-purple-200 text-sm max-w-md mx-auto mb-6">
+                        To view your dynamic match percentage, compatibility score, and matching/missing keywords, paste the target job description when analyzing your resume.
+                    </p>
+                    <a href="/analyzer" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors inline-flex items-center">
+                        <i class="fas fa-file-upload mr-2"></i> Go to Analyzer
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Career Roadmap Section -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-white">
+                        <i class="fas fa-map text-purple-400 mr-3"></i>
+                        Personalized 6-Month Career Learning Roadmap
+                    </h3>
+                    <button id="download-roadmap-btn" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition-colors border border-purple-400/30 flex items-center">
+                        <i class="fas fa-download mr-2"></i> Download Roadmap
+                    </button>
+                </div>
+                
+                <div class="relative pl-6 border-l-2 border-purple-500/50 space-y-6">
+                    {% if analysis_data.career_roadmap %}
+                        {% for milestone in analysis_data.career_roadmap %}
+                        <div class="relative group">
+                            <!-- Bullet Dot -->
+                            <div class="absolute -left-[31px] top-1.5 w-4 h-4 bg-purple-500 rounded-full border-4 border-gray-900 group-hover:scale-125 transition-transform dark:border-slate-900"></div>
+                            
+                            <div class="bg-white/5 p-5 rounded-xl border border-white/10 hover:bg-white/10 transition-all">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2.5 py-0.5 rounded-full">{{ milestone.month }}</span>
+                                    <span class="text-xs font-semibold text-gray-400 flex items-center"><i class="far fa-circle mr-1"></i> Not Started</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-white mb-2">{{ milestone.topic }}</h4>
+                                <p class="text-sm text-gray-300 leading-relaxed">{{ milestone.details }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-purple-300">No career roadmap generated.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Keywords Section -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <h3 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-key text-yellow-400 mr-3"></i>
+                    Top Keywords
+                </h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    {% if analysis_data.keywords %}
+                        {% for keyword in analysis_data.keywords[:15] %}
+                        <div class="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+                            <span class="text-purple-200 font-medium">{{ keyword }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-purple-300">No keywords extracted</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- GEMINI POWERED INSIGHTS SECTION -->
+            {% if analysis_data.gemini_insights %}
+            <!-- AI Suggestions Section -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <h3 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
+                    AI Resume Suggestions
+                </h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Strengths -->
+                    <div class="p-6 bg-green-600/20 rounded-xl border border-green-500/30">
+                        <h4 class="text-green-300 font-bold mb-3 flex items-center">
+                            <i class="fas fa-plus-circle mr-2"></i> Strengths
+                        </h4>
+                        <ul class="space-y-2">
+                            {% for s in analysis_data.gemini_insights.suggestions.strengths %}
+                            <li class="text-white text-sm flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-2 text-xs"></i> {{ s }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- Weaknesses -->
+                    <div class="p-6 bg-red-600/20 rounded-xl border border-red-500/30">
+                        <h4 class="text-red-300 font-bold mb-3 flex items-center">
+                            <i class="fas fa-minus-circle mr-2"></i> Weaknesses
+                        </h4>
+                        <ul class="space-y-2">
+                            {% for w in analysis_data.gemini_insights.suggestions.weaknesses %}
+                            <li class="text-white text-sm flex items-start">
+                                <i class="fas fa-exclamation-triangle text-red-400 mt-1 mr-2 text-xs"></i> {{ w }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- Improvements -->
+                    <div class="p-6 bg-blue-600/20 rounded-xl border border-blue-500/30">
+                        <h4 class="text-blue-300 font-bold mb-3 flex items-center">
+                            <i class="fas fa-tools mr-2"></i> Improvements
+                        </h4>
+                        <ul class="space-y-2">
+                            {% for i in analysis_data.gemini_insights.suggestions.improvements %}
+                            <li class="text-white text-sm flex items-start">
+                                <i class="fas fa-arrow-up text-blue-400 mt-1 mr-2 text-xs"></i> {{ i }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- Salary Prediction (Indian Market) -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-rupee-sign text-green-400 mr-3"></i>
+                        Indian Salary Prediction (LPA)
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+                            <span class="text-purple-200 font-semibold text-lg">Entry Level</span>
+                            <span class="text-white font-bold text-2xl">{{ analysis_data.gemini_insights.salary.entry }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-green-600/20 rounded-xl border border-green-500/30">
+                            <span class="text-green-200 font-semibold text-lg">Mid Level</span>
+                            <span class="text-white font-bold text-2xl">{{ analysis_data.gemini_insights.salary.mid }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+                            <span class="text-purple-200 font-semibold text-lg">Senior Level</span>
+                            <span class="text-white font-bold text-2xl">{{ analysis_data.gemini_insights.salary.senior }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Intelligence -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-globe-asia text-blue-400 mr-3"></i>
+                        Market Intelligence
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-purple-200">Current Demand</span>
+                            <span class="px-3 py-1 bg-blue-600/40 text-blue-100 rounded-full text-sm font-bold border border-blue-400/30">
+                                {{ analysis_data.gemini_insights.market.demand }}
+                            </span>
+                        </div>
+                        <div>
+                            <p class="text-purple-200 text-sm mb-2 font-semibold">Top Hiring Companies</p>
+                            <div class="flex flex-wrap gap-2">
+                                {% for company in analysis_data.gemini_insights.market.companies %}
+                                <span class="px-3 py-1 bg-white/5 text-white rounded-lg text-sm border border-white/10">{{ company }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-purple-200 text-sm mb-2 font-semibold">Key Emerging Trends</p>
+                            <ul class="space-y-2">
+                                {% for trend in analysis_data.gemini_insights.market.trends %}
+                                <li class="text-white text-sm flex items-start">
+                                    <i class="fas fa-caret-right text-blue-400 mt-1 mr-2"></i>
+                                    {{ trend }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- Course Recommendations -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-graduation-cap text-yellow-400 mr-3"></i>
+                        Recommended Courses
+                    </h3>
+                    <div class="space-y-4">
+                        {% for course in analysis_data.gemini_insights.courses %}
+                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-all group">
+                            <h4 class="text-white font-bold mb-1 group-hover:text-yellow-300 transition-colors">{{ course.title }}</h4>
+                            <p class="text-purple-200 text-sm flex items-center">
+                                <i class="fas fa-laptop-code mr-2"></i> {{ course.platform }}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Interview Preparation -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">
+                        <i class="fas fa-comments text-purple-400 mr-3"></i>
+                        Interview Preparation
+                    </h3>
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-purple-200 text-sm mb-3 font-semibold uppercase tracking-wider">Top Technical Questions</p>
+                            <div class="space-y-2">
+                                {% for q in analysis_data.gemini_insights.interview.technical_questions[:3] %}
+                                <div class="p-3 bg-purple-600/20 rounded-lg border border-purple-500/30 text-white text-sm">
+                                    {{ q }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="p-4 bg-yellow-600/20 rounded-xl border border-yellow-500/30">
+                            <p class="text-yellow-200 text-sm font-bold mb-1"><i class="fas fa-lightbulb mr-2"></i>Expert Tip:</p>
+                            <p class="text-white text-sm italic">{{ analysis_data.gemini_insights.interview.tip }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="flex justify-center space-x-6">
+                <a href="/analyzer" class="bg-purple-600 text-white px-8 py-4 rounded-xl font-bold text-xl hover:bg-purple-700 transition-all shadow-2xl border border-purple-500/30">
+                    <i class="fas fa-file-alt mr-3"></i>Analyze Another Resume
+                </a>
+                <a href="/download_report" class="bg-green-600 text-white px-8 py-4 rounded-xl font-bold text-xl hover:bg-green-700 transition-all shadow-2xl border border-green-500/30 inline-flex items-center">
+                    <i class="fas fa-download mr-3"></i>Download Report
+                </a>
+            </div>
+
+        {% else %}
+            <!-- No Data State -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-16 text-center border border-white/20 dark:bg-slate-900/60 dark:border-slate-800">
+                <div class="w-24 h-24 bg-purple-600/30 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
+                    <i class="fas fa-file-upload text-purple-300 text-4xl"></i>
+                </div>
+                <h2 class="text-4xl font-bold text-white mb-4">Upload resume to check</h2>
+                <p class="text-purple-200 text-lg mb-8">Your personalized dashboard will appear here after analysis</p>
+                <a href="/analyzer" class="bg-purple-600 text-white px-10 py-4 rounded-xl font-bold text-xl hover:bg-purple-700 transition-all inline-flex items-center shadow-lg hover-scale">
+                    <i class="fas fa-rocket mr-3"></i>Go to Analyzer
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+{% if analysis_data %}
+if (typeof Plotly !== 'undefined') {
+    // 1. Skill Match Overview Pie Chart
+    const skillsCount = {{ (analysis_data.skills or [])|length }};
+    const missingCount = {{ (analysis_data.missing_skills or [])|length }};
+    
+    const tracePie = {
+        labels: ['Found Skills', 'Missing Skills'],
+        values: [skillsCount, missingCount],
+        type: 'pie',
+        marker: {
+            colors: ['rgba(34, 197, 94, 0.8)', 'rgba(239, 68, 68, 0.8)']
+        },
+        textinfo: 'label+percent',
+        textfont: { color: '#fff' }
+    };
+    
+    const layoutPie = {
+        title: 'Skill Match Overview',
+        font: {
+            family: 'system-ui, -apple-system, sans-serif',
+            size: 14,
+            color: '#fff'
+        },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        margin: { t: 50, b: 50 }
+    };
+    
+    Plotly.newPlot('skill-match-chart', [tracePie], layoutPie, {responsive: true});
+    
+    // 2. ATS Breakdown Chart
+    const atsDetails = {{ (analysis_data.ats_details or {})|tojson }};
+    const traceBar = {
+        x: ['Skills Match (30)', 'Projects (25)', 'Experience (20)', 'Certifications (15)', 'Structure (10)'],
+        y: [
+            atsDetails.skills_match || 0,
+            atsDetails.projects || 0,
+            atsDetails.experience || 0,
+            atsDetails.certifications || 0,
+            atsDetails.structure || 0
+        ],
+        type: 'bar',
+        marker: {
+            color: 'rgba(251, 146, 60, 0.8)',
+            line: {
+                color: 'rgba(251, 146, 60, 1.0)',
+                width: 2
+            }
+        }
+    };
+    
+    const layoutBar = {
+        title: 'ATS Weight Score Distribution',
+        xaxis: { tickfont: { color: '#fff', size: 10 } },
+        yaxis: { title: 'Score Obtained', tickfont: { color: '#fff' } },
+        font: {
+            family: 'system-ui, -apple-system, sans-serif',
+            size: 13,
+            color: '#fff'
+        },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(251, 146, 60, 0.1)',
+        margin: { l: 50, r: 50, t: 50, b: 100 }
+    };
+    
+    Plotly.newPlot('ats-breakdown-chart', [traceBar], layoutBar, {responsive: true});
+
+    // 3. Explainable AI Feature Importance Chart
+    const xaiConts = {{ (analysis_data.xai_contributions or [])|tojson }};
+    // Sort in ascending order because Plotly y-axis draws from bottom up, so we want highest at the top
+    const sortedXai = [...xaiConts].sort((a, b) => a.percentage - b.percentage);
+    const xaiLabels = sortedXai.map(item => item.keyword.charAt(0).toUpperCase() + item.keyword.slice(1));
+    const xaiValues = sortedXai.map(item => item.percentage);
+
+    const traceXAI = {
+        y: xaiLabels,
+        x: xaiValues,
+        type: 'bar',
+        orientation: 'h',
+        marker: {
+            color: 'rgba(34, 211, 238, 0.8)',
+            line: {
+                color: 'rgba(34, 211, 238, 1.0)',
+                width: 2
+            }
+        },
+        text: xaiValues.map(v => '+' + v + '%'),
+        textposition: 'inside',
+        textfont: { color: '#fff' }
+    };
+
+    const layoutXAI = {
+        title: 'Top Local Feature Influence (%)',
+        xaxis: { title: 'Influence Weight (%)', tickfont: { color: '#fff' } },
+        yaxis: { tickfont: { color: '#fff', size: 10 } },
+        font: {
+            family: 'system-ui, -apple-system, sans-serif',
+            size: 11,
+            color: '#fff'
+        },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(34, 211, 238, 0.05)',
+        margin: { l: 120, r: 30, t: 40, b: 40 }
+    };
+
+    Plotly.newPlot('role-prediction-chart', [traceXAI], layoutXAI, {responsive: true});
+}
+
+// 4. Download Roadmap TXT
+document.getElementById('download-roadmap-btn').addEventListener('click', function() {
+    const roadmap = {{ (analysis_data.career_roadmap or [])|tojson }};
+    const role = "{{ analysis_data.predicted_role or 'N/A' }}";
+    
+    let text = `====================================================\n`;
+    text += `CAREER ROADMAP FOR: ${role.toUpperCase()}\n`;
+    text += `Generated by ResumeAI on ${new Date().toLocaleDateString()}\n`;
+    text += `====================================================\n\n`;
+    
+    roadmap.forEach(item => {
+        text += `${item.month}: ${item.topic}\n`;
+        text += `Action Plan: ${item.details}\n`;
+        text += `----------------------------------------------------\n\n`;
+    });
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${role.replace(/\s+/g, '_')}_Roadmap.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+{% endif %}
+</script>
+{% endblock %}

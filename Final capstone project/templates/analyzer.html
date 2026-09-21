@@ -1,0 +1,570 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Analyzer - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100 dark:from-slate-950 dark:to-slate-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b border-green-200 dark:bg-slate-900 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Resume Analyzer</h1>
+                    <p class="text-gray-600 dark:text-gray-300">Upload your resume for AI-powered analysis and ATS optimization</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- INPUT SECTION -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <i class="fas fa-upload text-green-600 mr-2"></i>Upload Your Resume
+            </h2>
+            
+            <form id="upload-form" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <!-- File Upload -->
+                <div>
+                    <div class="border-2 border-dashed border-green-300 rounded-lg p-8 text-center hover:border-green-500 transition-all bg-green-50" id="drop-zone">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cloud-upload-alt text-green-600 text-2xl"></i>
+                        </div>
+                        <label for="resume" class="cursor-pointer">
+                            <span class="text-green-600 font-semibold hover:text-green-700">Click to upload</span>
+                            <span class="text-gray-600"> or drag and drop</span>
+                        </label>
+                        <input type="file" id="resume" name="resume" accept=".pdf,.docx" required class="hidden">
+                        <p class="text-sm text-gray-500 mt-2">PDF, DOCX up to 5MB</p>
+                        <div id="file-info" class="mt-4 hidden">
+                            <div class="bg-white p-3 rounded-lg border border-green-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <i id="file-icon" class="fas fa-file-check text-green-500 mr-2"></i>
+                                        <span id="file-name" class="text-sm font-medium"></span>
+                                    </div>
+                                    <button type="button" id="remove-file" class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div id="file-stats" class="mt-2 text-xs text-gray-500 hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="upload-error" class="mt-2 text-red-600 text-sm hidden"></div>
+                </div>
+
+                <!-- Target Role -->
+                <div>
+                    <label for="target_role" class="block text-sm font-medium text-gray-700 mb-2">Target Role</label>
+                    <select id="target_role" name="target_role" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <option value="">Select your target role...</option>
+                        {% for role in roles %}
+                        <option value="{{ role }}">{{ role }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Job Description -->
+                <div>
+                    <label for="job_description" class="block text-sm font-medium text-gray-700 mb-2">Job Description (Optional)</label>
+                    <textarea id="job_description" name="job_description" rows="4" placeholder="Paste the job description here for better matching..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"></textarea>
+                    <p class="text-sm text-gray-500 mt-1">Adding job description improves matching accuracy by up to 30%</p>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed" id="analyze-btn" disabled>
+                    <i class="fas fa-rocket mr-2"></i>Analyze Resume
+                </button>
+            </form>
+        </div>
+
+        <!-- RESUME PREVIEW SECTION -->
+        <div id="text-preview-section" class="hidden bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">
+                    <i class="fas fa-file-alt text-green-600 mr-2"></i>
+                    Resume Preview
+                </h3>
+                <div class="flex items-center space-x-2">
+                    <span id="text-stats" class="text-sm text-gray-500"></span>
+                    <button id="toggle-preview" class="text-green-600 hover:text-green-700 text-sm font-medium">
+                        <i class="fas fa-chevron-down mr-1"></i>
+                        <span id="preview-toggle-text">Show More</span>
+                    </button>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="text-sm text-gray-700 leading-relaxed max-h-32 overflow-hidden" id="preview-content">
+                    <!-- Extracted text will be inserted here -->
+                </div>
+            </div>
+            <div class="mt-3 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                        <i class="fas fa-check-circle mr-1"></i>Text Extracted Successfully
+                    </span>
+                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                        <i class="fas fa-robot mr-1"></i>Ready for Analysis
+                    </span>
+                </div>
+                <button id="re-extract" class="text-green-600 hover:text-green-700 text-sm font-medium">
+                    <i class="fas fa-redo mr-1"></i>Re-extract
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loader" class="hidden bg-white rounded-xl shadow-lg p-12 text-center">
+            <div class="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 class="text-lg font-semibold mb-2">Analyzing Your Resume</h3>
+            <p class="text-gray-600">Our AI is reviewing your resume for ATS optimization and job matching...</p>
+            <div class="mt-6 flex justify-center space-x-2">
+                <div class="w-2 h-2 bg-green-600 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                <div class="w-2 h-2 bg-green-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                <div class="w-2 h-2 bg-green-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            </div>
+        </div>
+
+        <!-- OUTPUT SECTION -->
+        <section id="results" class="hidden space-y-8">
+            
+            <!-- Overview Cards -->
+            <div class="grid md:grid-cols-4 gap-6">
+                <!-- ML Prediction -->
+                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-brain text-green-600"></i>
+                        </div>
+                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">ML</span>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-600 mb-1">Predicted Role</h3>
+                    <p class="text-xl font-bold text-gray-800" id="predicted-role"></p>
+                    <p class="text-sm text-gray-500 mt-1">Confidence: <span id="confidence-score"></span>%</p>
+                </div>
+
+                <!-- ATS Score -->
+                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-pie text-blue-600"></i>
+                        </div>
+                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">ATS</span>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-600 mb-1">ATS Score</h3>
+                    <div class="flex items-baseline">
+                        <p class="text-3xl font-bold text-gray-800" id="ats-score"></p>
+                        <span class="text-gray-500 ml-1">/100</span>
+                    </div>
+                    <div class="mt-2">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="ats-progress" class="bg-green-600 h-2 rounded-full transition-all duration-500"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Matching -->
+                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-handshake text-purple-600"></i>
+                        </div>
+                        <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Match</span>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-600 mb-1">Job Match</h3>
+                    <div class="flex items-baseline">
+                        <p class="text-3xl font-bold text-gray-800" id="match-percentage"></p>
+                        <span class="text-gray-500 ml-1">%</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1" id="match-label"></p>
+                </div>
+
+                <!-- Resume Strength -->
+                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-signal text-orange-600"></i>
+                        </div>
+                        <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">Strength</span>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-600 mb-1">Resume Strength</h3>
+                    <p class="text-xl font-bold" id="strength-label"></p>
+                    <p class="text-sm text-gray-500 mt-1">ML Score: <span id="regression-score"></span>/100</p>
+                </div>
+            </div>
+
+            <!-- Skills Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-tools text-green-600 mr-2"></i>Skills Analysis
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4">Found Skills</h4>
+                        <div id="extracted-skills" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4">Missing Skills</h4>
+                        <div id="missing-skills" class="flex flex-wrap gap-2"></div>
+                        <p class="text-gray-600 mt-4">Skill Gap: <span id="skill-gap" class="text-lg font-bold text-gray-900"></span>%</p>
+                    </div>
+                </div>
+            <!-- Job Description Matching Details -->
+            <div id="job-match-section" class="hidden bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-handshake text-purple-600 mr-2"></i>Job Description Match Analysis
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4">Matching Skills</h4>
+                        <div id="job-matching-skills" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4">Missing Keywords</h4>
+                        <div id="job-missing-keywords" class="flex flex-wrap gap-2"></div>
+                        <p class="text-gray-600 mt-4">ATS Compatibility: <span id="job-compatibility" class="text-lg font-bold text-gray-900"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-center space-x-4">
+                <button id="download-btn" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all">
+                    <i class="fas fa-download mr-2"></i>Download Report
+                </button>
+                <a href="/dashboard" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
+                    <i class="fas fa-chart-line mr-2"></i>View Dashboard
+                </a>
+                <button onclick="location.reload()" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-all">
+                    <i class="fas fa-redo mr-2"></i>Analyze Another
+                </button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+// Enhanced file upload handling
+const fileInput = document.getElementById('resume');
+const dropZone = document.getElementById('drop-zone');
+const fileInfo = document.getElementById('file-info');
+const fileName = document.getElementById('file-name');
+const fileIcon = document.getElementById('file-icon');
+const fileStats = document.getElementById('file-stats');
+const removeFile = document.getElementById('remove-file');
+const analyzeBtn = document.getElementById('analyze-btn');
+const uploadError = document.getElementById('upload-error');
+const textPreviewSection = document.getElementById('text-preview-section');
+const previewContent = document.getElementById('preview-content');
+const textStats = document.getElementById('text-stats');
+const togglePreview = document.getElementById('toggle-preview');
+const previewToggleText = document.getElementById('preview-toggle-text');
+const reExtract = document.getElementById('re-extract');
+
+let extractedText = '';
+let isPreviewExpanded = false;
+
+// Drag and drop functionality
+dropZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    dropZone.classList.add('border-green-500', 'bg-green-100');
+});
+
+dropZone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    dropZone.classList.remove('border-green-500', 'bg-green-100');
+});
+
+dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropZone.classList.remove('border-green-500', 'bg-green-100');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        handleFileUpload();
+    }
+});
+
+// File input change
+fileInput.addEventListener('change', handleFileUpload);
+
+// Remove file
+removeFile.addEventListener('click', function() {
+    resetFileUpload();
+});
+
+// Re-extract text
+reExtract.addEventListener('click', function() {
+    if (fileInput.files.length > 0) {
+        extractTextFromFile();
+    }
+});
+
+// Toggle preview
+togglePreview.addEventListener('click', function() {
+    isPreviewExpanded = !isPreviewExpanded;
+    const previewDiv = document.getElementById('preview-content');
+    
+    if (isPreviewExpanded) {
+        previewDiv.classList.remove('max-h-32', 'overflow-hidden');
+        previewDiv.classList.add('max-h-none');
+        previewDiv.textContent = extractedText;
+        previewToggleText.textContent = 'Show Less';
+        togglePreview.querySelector('i').classList.remove('fa-chevron-down');
+        togglePreview.querySelector('i').classList.add('fa-chevron-up');
+    } else {
+        previewDiv.classList.add('max-h-32', 'overflow-hidden');
+        previewDiv.classList.remove('max-h-none');
+        previewDiv.textContent = extractedText.substring(0, 500) + (extractedText.length > 500 ? '...' : '');
+        previewToggleText.textContent = 'Show More';
+        togglePreview.querySelector('i').classList.remove('fa-chevron-up');
+        togglePreview.querySelector('i').classList.add('fa-chevron-down');
+    }
+});
+
+function handleFileUpload() {
+    if (fileInput.files.length === 0) return;
+    
+    const file = fileInput.files[0];
+    const fileNameStr = file.name;
+    const fileSize = file.size;
+    const fileExt = fileNameStr.split('.').pop().toLowerCase();
+    
+    // Reset previous states but keep the file input value
+    hideError();
+    fileInfo.classList.add('hidden');
+    textPreviewSection.classList.add('hidden');
+    analyzeBtn.disabled = true;
+    analyzeBtn.classList.add('disabled:opacity-50', 'disabled:cursor-not-allowed');
+    extractedText = '';
+    
+    // Validate file type
+    if (!['pdf', 'docx'].includes(fileExt)) {
+        showError('Unsupported file format. Only PDF and DOCX files are allowed.');
+        return;
+    }
+    
+    // Validate file size (5MB)
+    if (fileSize > 5 * 1024 * 1024) {
+        showError('File size exceeds 5MB limit.');
+        return;
+    }
+    
+    // Show file info
+    document.getElementById('file-name').textContent = fileNameStr;
+    
+    // Set appropriate icon
+    if (fileExt === 'pdf') {
+        fileIcon.className = 'fas fa-file-pdf text-red-500 mr-2';
+    } else {
+        fileIcon.className = 'fas fa-file-word text-blue-500 mr-2';
+    }
+    
+    // Show file size
+    const fileSizeStr = (fileSize / 1024).toFixed(1) + ' KB';
+    fileStats.textContent = `Size: ${fileSizeStr}`;
+    fileStats.classList.remove('hidden');
+    
+    fileInfo.classList.remove('hidden');
+    
+    // Extract text
+    extractTextFromFile();
+}
+
+function extractTextFromFile() {
+    const file = fileInput.files[0];
+    if (!file) return;
+    
+    // Show loading state
+    fileIcon.className = 'fas fa-spinner fa-spin text-green-500 mr-2';
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    fetch('/extract_text', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            showError(data.error);
+            resetFileUpload();
+            return;
+        }
+        
+        if (data.success) {
+            extractedText = data.text;
+            displayTextPreview(data);
+            enableAnalyzeButton();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showError('Error extracting text. Please try again.');
+        resetFileUpload();
+    });
+}
+
+function displayTextPreview(data) {
+    // Show text preview section
+    textPreviewSection.classList.remove('hidden');
+    
+    // Display text stats
+    textStats.textContent = `${data.word_count} words, ${data.char_count} characters`;
+    
+    // Display preview (first 500 characters)
+    const preview = data.text.substring(0, 500) + (data.text.length > 500 ? '...' : '');
+    previewContent.textContent = preview;
+    
+    // Reset preview state
+    isPreviewExpanded = false;
+    previewContent.classList.add('max-h-32', 'overflow-hidden');
+    previewContent.classList.remove('max-h-none');
+    previewToggleText.textContent = 'Show More';
+    togglePreview.querySelector('i').classList.remove('fa-chevron-up');
+    togglePreview.querySelector('i').classList.add('fa-chevron-down');
+    
+    // Update file icon to success
+    const fileExt = fileInput.files[0].name.split('.').pop().toLowerCase();
+    if (fileExt === 'pdf') {
+        fileIcon.className = 'fas fa-file-pdf text-red-500 mr-2';
+    } else {
+        fileIcon.className = 'fas fa-file-word text-blue-500 mr-2';
+    }
+}
+
+function enableAnalyzeButton() {
+    analyzeBtn.disabled = false;
+    analyzeBtn.classList.remove('disabled:opacity-50', 'disabled:cursor-not-allowed');
+}
+
+function resetFileUpload() {
+    fileInput.value = '';
+    fileInfo.classList.add('hidden');
+    textPreviewSection.classList.add('hidden');
+    analyzeBtn.disabled = true;
+    analyzeBtn.classList.add('disabled:opacity-50', 'disabled:cursor-not-allowed');
+    extractedText = '';
+    hideError();
+}
+
+function showError(message) {
+    uploadError.textContent = message;
+    uploadError.classList.remove('hidden');
+}
+
+function hideError() {
+    uploadError.classList.add('hidden');
+}
+
+// Form submission
+document.getElementById('upload-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const loader = document.getElementById('loader');
+    const results = document.getElementById('results');
+    
+    // Show loader
+    loader.classList.remove('hidden');
+    results.classList.add('hidden');
+    
+    fetch('/analyze', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            loader.classList.add('hidden');
+            return;
+        }
+        
+        window.location.href = '/dashboard';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during analysis');
+        loader.classList.add('hidden');
+    });
+});
+
+function displayResults(data) {
+    // Basic info
+    document.getElementById('predicted-role').textContent = data.predicted_role;
+    document.getElementById('confidence-score').textContent = data.confidence_score;
+    document.getElementById('ats-score').textContent = data.ats_score;
+    document.getElementById('ats-progress').style.width = data.ats_score + '%';
+    document.getElementById('match-percentage').textContent = data.match_percentage;
+    document.getElementById('match-label').textContent = data.match_label;
+    document.getElementById('strength-label').textContent = data.strength;
+    document.getElementById('strength-label').className = 'text-xl font-bold ' + getStrengthClass(data.strength);
+    document.getElementById('regression-score').textContent = data.regression_score;
+    
+    // Skills
+    displaySkills('extracted-skills', data.ats_details.found_skills, 'green');
+    displaySkills('missing-skills', data.ats_details.missing_skills, 'red');
+    document.getElementById('skill-gap').textContent = data.skill_gap_percentage;
+
+    // Job Match Details
+    if (data.match_percentage > 0) {
+        document.getElementById('job-match-section').classList.remove('hidden');
+        displaySkills('job-matching-skills', data.matching_skills, 'green');
+        displaySkills('job-missing-keywords', data.missing_keywords, 'red');
+        document.getElementById('job-compatibility').textContent = data.compatibility;
+    } else {
+        document.getElementById('job-match-section').classList.add('hidden');
+    }
+}
+
+function getStrengthClass(strength) {
+    switch(strength.toLowerCase()) {
+        case 'strong': return 'text-green-600';
+        case 'average': return 'text-yellow-600';
+        case 'weak': return 'text-red-600';
+        default: return 'text-gray-600';
+    }
+}
+
+function displaySkills(elementId, skills, color) {
+    const container = document.getElementById(elementId);
+    container.innerHTML = '';
+    skills.forEach(skill => {
+        const span = document.createElement('span');
+        span.className = `px-3 py-1 rounded-full text-sm font-medium ${
+            color === 'green' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+        }`;
+        span.textContent = skill;
+        container.appendChild(span);
+    });
+}
+
+// Download report functionality
+document.getElementById('download-btn').addEventListener('click', function() {
+    fetch('/download_report', {
+        method: 'GET'
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'resume_analysis_report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    })
+    .catch(error => {
+        console.error('Error downloading report:', error);
+        alert('Error downloading report. Please try again.');
+    });
+});
+</script>
+{% endblock %}

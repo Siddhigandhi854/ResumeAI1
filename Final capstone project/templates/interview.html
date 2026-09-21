@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Prep - AI Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-user-tie"></i> Interview Preparation</h1>
+            <p>Master your interview for <b>{{ role }}</b></p>
+        </header>
+
+        <main>
+            <div class="results-detailed">
+                <div class="card">
+                    <h3><i class="fas fa-code"></i> Technical Questions</h3>
+                    <ul class="suggestion-block">
+                        {% for q in data.technical_questions %}
+                        <li style="margin-bottom: 1rem;">{{ q }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-comments"></i> Behavioral Questions</h3>
+                    <ul class="suggestion-block">
+                        {% for q in data.behavioral_questions %}
+                        <li style="margin-bottom: 1rem;">{{ q }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 1.5rem; border-top: 5px solid var(--accent-color);">
+                <h3><i class="fas fa-lightbulb"></i> Expert Tip</h3>
+                <p style="font-size: 1.1rem; padding: 1rem; background: #fffde7; border-radius: 8px;">
+                    {{ data.tip }}
+                </p>
+            </div>
+
+            <div class="actions">
+                <a href="/" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto;">Back to Dashboard</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
